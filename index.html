@@ -378,9 +378,17 @@ async function submitVotes(){
          "Thank you for voting!"
          );
 
-         document.body.innerHTML =
-
-         "<h2>Vote successfully submitted.</h2>";
+        document.body.innerHTML = `
+        <div style="
+            text-align:center;
+            margin-top:100px;
+        ">
+            <h1>✅ Thank You!</h1>
+        
+            <p>
+              Your vote has been recorded.
+            </p>
+        </div>;
 
      }
      else{
