@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Vote for Top 5</title>
+
+<style>
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  padding:15px;
+  background:#f2f2f2;
+  font-family:Segoe UI, Arial, sans-serif;
+}
+
+.header{
+  background:white;
+  padding:20px;
+  border-radius:12px;
+  margin-bottom:20px;
+  box-shadow:0 2px 5px rgba(0,0,0,.1);
+}
+
+h1{
+  margin-top:0;
+  font-size:24px;
+}
+
+input{
+  width:100%;
+  padding:12px;
+  font-size:16px;
+  border:1px solid #ccc;
+  border-radius:8px;
+}
+
+.counter{
+  margin-top:10px;
+  font-size:18px;
+  font-weight:bold;
+}
+
+.gallery{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:15px;
+}
+
+.card{
+  background:white;
+  padding:15px;
+  border-radius:12px;
+  text-align:center;
+  box-shadow:0 2px 6px rgba(0,0,0,0.08);
+}
+
+.card img{
+  width:110px;
+  height:110px;
+  border-radius:50%;
+  object-fit:cover;
+}
+
+.name{
+  margin-top:12px;
+  font-weight:600;
+  min-height:48px;
+}
+
+button{
+  cursor:pointer;
+}
+
+.selectBtn{
+  margin-top:12px;
+  background:#0078d4;
+  color:white;
+  border:none;
+  padding:10px 15px;
+  border-radius:8px;
+}
+
+.selected{
+  background:#28a745 !important;
+}
+
+.submitBtn{
+  display:none;
+  margin-top:15px;
+  background:#28a745;
+  color:white;
+  border:none;
+  padding:14px 20px;
+  border-radius:8px;
+  width:100%;
+  font-size:18px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="header">
+
+<h1>Vote For Five Nominees</h1>
+
+<label for="voteCode">
+Voting Code
+</label>
+
+<input
+ id="voteCode"
+ maxlength="20"
+ placeholder="Enter voting code">
+
+<div
+ id="counter"
+ class="counter"
+ aria-live="polite">
+
+Selected: 0 of 5
+
+</div>
+
+<button
+ id="submitBtn"
+ class="submitBtn"
+ onclick="submitVotes()">
+
+Submit Choices
+
+</button>
+
+</div>
+
+<div
+ id="gallery"
+ class="gallery">
+</div>
+
+<script>
+
+/**********************************************
+ REPLACE WITH YOUR FLOW URL
+**********************************************/
+
+const FLOW_URL =
+"https://YOUR-FLOW-URL";
+
+/**********************************************
+ SAMPLE DATA
+ REPLACE WITH YOUR POWER BI EXPORT
+**********************************************/
+
+const nominees = [
+
+{
+personID:1,
+name:"John Smith",
+avatar:"https://avatars.planningcenteronline.com/uploads/person/33204893-1515622693/avatar.3.png?1"
+},
+
+{
+personID:2,
+name:"Mary Jones",
+avatar:"https://picsum.photos/200?2"
+},
+
+{
+personID:3,
+name:"Jennifer Brown",
+avatar:"https://picsum.photos/200?3"
+},
+
+{
+personID:4,
+name:"David Clark",
+avatar:"https://picsum.photos/200?4"
+},
+
+{
+personID:5,
+name:"Lisa Taylor",
+avatar:"https://picsum.photos/200?5"
+},
+
+{
+personID:6,
+name:"Sarah White",
+avatar:"https://picsum.photos/200?6"
+},
+
+{
+personID:7,
+name:"James Green",
+avatar:"https://picsum.photos/200?7"
+},
+
+{
+personID:8,
+name:"Robert Lee",
+avatar:"https://picsum.photos/200?8"
+}
+
+];
+
+let selectedPeople = [];
+
+renderGallery();
+
+function renderGallery(){
+
+ const gallery =
+ document.getElementById("gallery");
+
+ nominees.forEach(person => {
+
+   gallery.innerHTML += `
+
+   <div class="card">
+
+      <img
+       src="${person.avatar}"
+       alt="${person.name}">
+
+      <div class="name">
+
+        ${person.name}
+
+      </div>
+
+      <button
+       class="selectBtn"
+       id="btn-${person.personID}"
+       onclick="togglePerson(${person.personID})">
+
+       Select
+
+      </button>
+
+   </div>
+
+   `;
+
+ });
+
+}
+
+function togglePerson(personID){
+
+ const button =
+ document.getElementById(
+ `btn-${personID}`
+ );
+
+ const index =
+ selectedPeople.indexOf(personID);
+
+ if(index > -1){
+
+    selectedPeople.splice(index,1);
+
+    button.textContent = 'Select';
+
+    button.classList.remove('selected');
+
+ }
+ else{
+
+    if(selectedPeople.length >= 5){
+
+       alert(
+       'You may only select five people.'
+       );
+
+       return;
+    }
+
+    selectedPeople.push(personID);
+
+    button.textContent = 'Selected';
+
+    button.classList.add('selected');
+ }
+
+ updateCounter();
+
+}
+
+function updateCounter(){
+
+ const count =
+ selectedPeople.length;
+
+ document.getElementById(
+ "counter"
+ ).textContent =
+ `Selected: ${count} of 5`;
+
+ document.getElementById(
+ "submitBtn"
+ ).style.display =
+ count===5
+ ? "block"
+ : "none";
+
+}
+
+async function submitVotes(){
+
+ const votingCode =
+ document.getElementById(
+ 'voteCode'
+ ).value.trim();
+
+ if(votingCode===""){
+
+   alert(
+   "Please enter a voting code."
+   );
+
+   return;
+ }
+
+ const votes =
+ nominees
+ .filter(n =>
+     selectedPeople.includes(
+     n.personID
+     )
+ )
+ .map(n => ({
+     personID:n.personID,
+     personName:n.name
+ }));
+
+ const payload = {
+
+     votingCode:votingCode,
+
+     votes:votes
+
+ };
+
+ try{
+
+     const response =
+     await fetch(
+       FLOW_URL,
+       {
+          method:'POST',
+
+          headers:{
+             'Content-Type':
+             'application/json'
+          },
+
+          body:
+          JSON.stringify(payload)
+       }
+     );
+
+     const result =
+     await response.json();
+
+     if(result.success){
+
+         alert(
+         "Thank you for voting!"
+         );
+
+         document.body.innerHTML =
+
+         "<h2>Vote successfully submitted.</h2>";
+
+     }
+     else{
+
+         alert(
+         result.message
+         );
+     }
+
+ }
+ catch(ex){
+
+     alert(
+     "Unable to submit vote."
+     );
+
+     console.error(ex);
+
+ }
+
+}
+
+</script>
+
+</body>
+</html>
