@@ -113,7 +113,7 @@ button{
 
 <h1>Vote for Your Top Five Nominees</h1>
 <p>
-Please prayerfully select up to five nominees whom you would like to recognize. Once submitted, your vote cannot be changed.
+Please prayerfully select up to five nominees. Once submitted, your vote cannot be changed.
 </p>
 
 <label for="voteCode">
@@ -487,9 +487,10 @@ async function submitVotes(){
      }
      else{
 
-         alert(
-         result.message
-         );
+      alert(
+         result.message ||
+         "The voting code is invalid or an unexpected error occurred."
+      );
      }
 
  }
