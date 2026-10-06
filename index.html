@@ -111,7 +111,10 @@ button{
 
 <div class="header">
 
-<h1>Vote For Five Nominees</h1>
+<h1>Vote for Your Top Five Nominees</h1>
+<p>
+Please prayerfully select up to five nominees whom you would like to recognize. Once submitted, your vote cannot be changed.
+</p>
 
 <label for="voteCode">
 Voting Code
@@ -144,7 +147,8 @@ Submit Choices
 
 <div
  id="gallery"
- class="gallery">
+ class="gallery"
+ style="display:none;">
 </div>
 
 <script>
@@ -164,51 +168,141 @@ const FLOW_URL =
 const nominees = [
 
 {
-personID:1,
-name:"John Smith",
-avatar:"https://avatars.planningcenteronline.com/uploads/person/33204893-1515622693/avatar.3.png?1"
+  personID:33202001,
+  name:"James George",
+  avatar:"https://avatars.planningcenteronline.com/uploads/person/33202001-1515618249/avatar.4.jpg"
 },
 
 {
-personID:2,
-name:"Mary Jones",
-avatar:"https://picsum.photos/200?2"
+  personID:33204600,
+  name:"Jimmy Varghese",
+  avatar:"https://avatars.planningcenteronline.com/uploads/person/33204600-1515621874/avatar.4.png"
 },
 
 {
-personID:3,
-name:"Jennifer Brown",
-avatar:"https://picsum.photos/200?3"
+  personID:33204609,
+  name:"Mathew Philip",
+  avatar:"https://avatars.planningcenteronline.com/uploads/person/33204609-1515621874/avatar.3.jpg"
 },
 
 {
-personID:4,
-name:"David Clark",
-avatar:"https://picsum.photos/200?4"
+  personID:33204617,
+  name:"Shijo Mathew",
+  avatar:"https://avatars.planningcenteronline.com/uploads/initials/fj.png"
 },
 
 {
-personID:5,
-name:"Lisa Taylor",
-avatar:"https://picsum.photos/200?5"
+  personID:33204622,
+  name:"Soma Bhattacharjee",
+  avatar:"https://avatars.planningcenteronline.com/uploads/person/33204622-1515621874/avatar.23.jpeg"
 },
 
 {
-personID:6,
-name:"Sarah White",
-avatar:"https://picsum.photos/200?6"
+  personID:33204627,
+  name:"Vinci Mathews",
+  avatar:"https://avatars.planningcenteronline.com/uploads/person/33204627-1515621874/avatar.2.png"
 },
 
 {
-personID:7,
-name:"James Green",
-avatar:"https://picsum.photos/200?7"
+  personID:33204631,
+  name:"Bennish John",
+  avatar:"https://avatars.planningcenteronline.com/uploads/person/33204631-1515621874/avatar.3.png"
 },
 
 {
-personID:8,
-name:"Robert Lee",
-avatar:"https://picsum.photos/200?8"
+  personID:33204633,
+  name:"Betsy Shaji",
+  avatar:"https://avatars.planningcenteronline.com/uploads/person/33204633-1515621874/avatar.2.jpg"
+},
+
+{
+  personID:33204980,
+  name:"Annamma",
+  avatar:"https://avatars.planningcenteronline.com/uploads/person/33204980-1515622693/avatar.6.jpg"
+},
+
+{
+  personID:33214243,
+  name:"Johan Mathew Jeson",
+  avatar:"https://avatars.planningcenteronline.com/uploads/person/33214243-1515648952/avatar.2.png"
+},
+
+{
+  personID:79129770,
+  name:"Rajesh Sabbineni",
+  avatar:"https://avatars.planningcenteronline.com/uploads/person/79129770-1594659818/avatar.3.png"
+},
+
+{
+  personID:86815506,
+  name:"Jalaja Biju",
+  avatar:"https://avatars.planningcenteronline.com/uploads/person/86815506-1609722060/avatar.1.png"
+},
+
+{
+  personID:88387730,
+  name:"Shiju Abraham",
+  avatar:"https://avatars.planningcenteronline.com/uploads/initials/AJ.png"
+},
+
+{
+  personID:88387792,
+  name:"Shibu Thomas",
+  avatar:"https://avatars.planningcenteronline.com/uploads/person/88387792-1613444129/avatar.2.jpg"
+},
+
+{
+  personID:96427171,
+  name:"Justin George",
+  avatar:"https://avatars.planningcenteronline.com/uploads/initials/RS.png"
+},
+
+{
+  personID:102250545,
+  name:"Lesly M. Thomas",
+  avatar:"https://avatars.planningcenteronline.com/uploads/initials/JB.png"
+},
+
+{
+  personID:132311306,
+  name:"Feeby John",
+  avatar:"https://avatars.planningcenteronline.com/uploads/initials/SA.png"
+},
+
+{
+  personID:132311399,
+  name:"James Samuel",
+  avatar:"https://avatars.planningcenteronline.com/uploads/person/132311399-1691505940/avatar.1.jpg"
+},
+
+{
+  personID:144576612,
+  name:"Benjamin Varghese",
+  avatar:"https://avatars.planningcenteronline.com/uploads/person/144576612-1710816859/avatar.2.jpg"
+},
+
+{
+  personID:145098730,
+  name:"Sagi Abraham",
+  avatar:"https://avatars.planningcenteronline.com/uploads/initials/JG.png"
+},
+
+{
+  personID:152806364,
+  name:"Omana John",
+  avatar:"https://avatars.planningcenteronline.com/uploads/person/152806364-1723246929/avatar.11.jpg"
+},
+
+{
+  personID:153013778,
+  name:"Sneha Cherian",
+  avatar:"https://avatars.planningcenteronline.com/uploads/person/153013778-1723509372/avatar.1.jpeg"
+},
+
+{
+  personID:166337776,
+  name:"John Jacob",
+  avatar:"https://avatars.planningcenteronline.com/uploads/initials/SM.png"
 }
 
 ];
