@@ -130,7 +130,7 @@ Voting Code
  class="counter"
  aria-live="polite">
 
-Selected: 0 of 5
+Council: 0/5 | Auditor: 0/1
 
 </div>
 
@@ -184,7 +184,7 @@ const nominees = [
 },
 
 {
-  personID:AUD33204600,
+  personID:"AUD33204600",
   name:"Jimmy Varghese",
   avatar:"https://avatars.planningcenteronline.com/uploads/person/33204600-1515621874/avatar.4.png"
 },
@@ -208,13 +208,13 @@ const nominees = [
 },
 
 {
-  personID:AUD33204627,
+  personID:"AUD33204627",
   name:"Vinci Mathews",
   avatar:"https://avatars.planningcenteronline.com/uploads/person/33204627-1515621874/avatar.2.png"
 },
 
 {
-  personID:AUD33204631,
+  personID:"AUD33204631",
   name:"Bennish John",
   avatar:"https://avatars.planningcenteronline.com/uploads/person/33204631-1515621874/avatar.3.png"
 },
@@ -347,13 +347,15 @@ function renderCouncilMembers(){
 
         gallery.innerHTML += `
 
-        <div class="card">
-
-            ${person.avatar}
-
-            <div class="name">
-                ${person.name}
-            </div>
+          <div class="card">
+          
+              <img
+                  src="${person.avatar}"
+                  alt="${person.name}">
+          
+              <div class="name">
+                  ${person.name}
+              </div>
 
             <button
                 class="selectBtn"
@@ -379,13 +381,15 @@ function renderAuditors(){
 
         gallery.innerHTML += `
 
-        <div class="card">
-
-            ${person.avatar}
-
-            <div class="name">
-                ${person.name}
-            </div>
+    <div class="card">
+    
+        <img
+            src="${person.avatar}"
+            alt="${person.name}">
+    
+        <div class="name">
+            ${person.name}
+        </div>
 
             <button
                 class="selectBtn"
@@ -489,14 +493,7 @@ function renderAuditors(){
     updateCounter();
 }
   
-  function togglePerson(personID){
-
- const button =
- document.getElementById(
- `btn-${personID}`
- );
-
- const index =
+  const index =
  selectedPeople.indexOf(personID);
 
  if(index > -1){
@@ -551,6 +548,16 @@ function updateCounter(){
 }
 
 async function submitVotes(){
+  document.getElementById(
+   "submitBtn"
+).disabled = true;
+  
+   if(votingCode===""){
+
+   alert(
+   "Please enter a voting code."
+   );
+     
 if(
     selectedCouncil.length !== 5
 ){
@@ -576,11 +583,7 @@ if(
  'voteCode'
  ).value.trim();
 
- if(votingCode===""){
 
-   alert(
-   "Please enter a voting code."
-   );
 
    return;
  }
@@ -646,7 +649,8 @@ if(
         <h1>✅ Thank You!</h1>
          
         <p>
-        Your vote has been recorded.
+        Your selections have been received and securely recorded.
+        Thank you for participating prayerfully in this process.
         </p>
         </div>
         `
@@ -667,6 +671,10 @@ if(
      "Unable to submit vote."
      );
 
+   document.getElementById(
+   "submitBtn"
+  ).disabled = false;
+   
      console.error(ex);
 
  }
