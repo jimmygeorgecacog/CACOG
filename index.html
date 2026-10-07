@@ -548,6 +548,12 @@ function updateCounter(){
 }
 
 async function submitVotes(){
+  
+  const votingCode =
+ document.getElementById(
+ 'voteCode'
+ ).value.trim();
+  
   document.getElementById(
    "submitBtn"
 ).disabled = true;
@@ -578,10 +584,7 @@ if(
 
     return;
 }
- const votingCode =
- document.getElementById(
- 'voteCode'
- ).value.trim();
+
 
 
 
