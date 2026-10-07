@@ -493,40 +493,6 @@ function renderAuditors(){
     updateCounter();
 }
   
-  const index =
- selectedPeople.indexOf(personID);
-
- if(index > -1){
-
-    selectedPeople.splice(index,1);
-
-    button.textContent = 'Select';
-
-    button.classList.remove('selected');
-
- }
- else{
-
-    if(selectedPeople.length >= 5){
-
-       alert(
-       'You may only select five people.'
-       );
-
-       return;
-    }
-
-    selectedPeople.push(personID);
-
-    button.textContent = 'Selected';
-
-    button.classList.add('selected');
- }
-
- updateCounter();
-
-}
-
 function updateCounter(){
 
     document.getElementById(
@@ -548,140 +514,142 @@ function updateCounter(){
 }
 
 async function submitVotes(){
-  
-  const votingCode =
- document.getElementById(
- 'voteCode'
- ).value.trim();
-  
-  document.getElementById(
-   "submitBtn"
-).disabled = true;
-  
-   if(votingCode===""){
 
-   alert(
-   "Please enter a voting code."
-   );
-     
-if(
-    selectedCouncil.length !== 5
-){
+    document.getElementById(
+        "submitBtn"
+    ).disabled = true;
 
-    alert(
-        "Please select 5 council members."
-    );
+    const votingCode =
+        document.getElementById(
+            "voteCode"
+        ).value.trim();
 
-    return;
-}
-  if(
-    selectedAuditor.length !== 1
-){
+    if(votingCode === ""){
 
-    alert(
-        "Please select 1 auditor."
-    );
+        alert(
+            "Please enter a voting code."
+        );
 
-    return;
-}
+        document.getElementById(
+            "submitBtn"
+        ).disabled = false;
 
+        return;
+    }
 
+    if(selectedCouncil.length !== 5){
 
+        alert(
+            "Please select 5 council members."
+        );
 
-   return;
- }
+        document.getElementById(
+            "submitBtn"
+        ).disabled = false;
 
- const votes = nominees
-.filter(n =>
+        return;
+    }
 
-    selectedCouncil.includes(
-        String(n.personID)
-    )
+    if(selectedAuditor.length !== 1){
 
-    ||
+        alert(
+            "Please select 1 auditor."
+        );
 
-    selectedAuditor.includes(
-        String(n.personID)
-    )
-)
-.map(n => ({
-    personID:n.personID,
-    personName:n.name
-}));
+        document.getElementById(
+            "submitBtn"
+        ).disabled = false;
 
- const payload = {
+        return;
+    }
 
-     votingCode:votingCode,
+    const votes = nominees
+        .filter(n =>
 
-     votes:votes
+            selectedCouncil.includes(
+                String(n.personID)
+            )
 
- };
+            ||
 
- try{
+            selectedAuditor.includes(
+                String(n.personID)
+            )
 
-     const response =
-     await fetch(
-       FLOW_URL,
-       {
-          method:'POST',
+        )
+        .map(n => ({
+            personID:n.personID,
+            personName:n.name
+        }));
 
-          headers:{
-             'Content-Type':
-             'application/json'
-          },
+    const payload = {
 
-          body:
-          JSON.stringify(payload)
-       }
-     );
+        votingCode:votingCode,
 
-     const result =
-     await response.json();
+        votes:votes
 
-     if(result.success){
+    };
 
-         alert(
-         "Thank you for voting!"
-         );
+    try{
 
-        document.body.innerHTML = `
-        <div style="
-        text-align:center;
-        margin-top:100px;
-        ">
-        <h1>✅ Thank You!</h1>
-         
-        <p>
-        Your selections have been received and securely recorded.
-        Thank you for participating prayerfully in this process.
-        </p>
-        </div>
-        `
+        const response =
+            await fetch(
+                FLOW_URL,
+                {
+                    method:'POST',
+                    headers:{
+                        'Content-Type':
+                        'application/json'
+                    },
+                    body:
+                    JSON.stringify(payload)
+                }
+            );
 
-     }
-     else{
+        const result =
+            await response.json();
 
-      alert(
-         result.message ||
-         "The voting code is invalid or an unexpected error occurred."
-      );
-     }
+        if(result.success){
 
- }
- catch(ex){
+            document.body.innerHTML = `
+                <div style="
+                    text-align:center;
+                    margin-top:100px;
+                ">
+                    <h1>✅ Thank You!</h1>
 
-     alert(
-     "Unable to submit vote."
-     );
+                    <p>
+                    Your selections have been received and securely recorded.
+                    Thank you for participating prayerfully in this process.
+                    </p>
+                </div>
+            `;
+        }
+        else{
 
-   document.getElementById(
-   "submitBtn"
-  ).disabled = false;
-   
-     console.error(ex);
+            alert(
+                result.message ||
+                "The voting code is invalid or an unexpected error occurred."
+            );
 
- }
+            document.getElementById(
+                "submitBtn"
+            ).disabled = false;
+        }
 
+    }
+    catch(ex){
+
+        alert(
+            "Unable to submit vote."
+        );
+
+        document.getElementById(
+            "submitBtn"
+        ).disabled = false;
+
+        console.error(ex);
+    }
 }
 
 </script>
