@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Vote for Top 5</title>
+<title>Vote for 5 Council Members</title>
 
 <style>
 
@@ -145,8 +145,19 @@ Submit Choices
 
 </div>
 
+<h2>Council Members</h2>
+
 <div
- id="gallery"
+ id="councilGallery"
+ class="gallery">
+</div>
+
+<hr style="margin:30px 0">
+
+<h2>Auditor</h2>
+
+<div
+ id="auditorGallery"
  class="gallery">
 </div>
 
@@ -173,7 +184,7 @@ const nominees = [
 },
 
 {
-  personID:33204600,
+  personID:AUD33204600,
   name:"Jimmy Varghese",
   avatar:"https://avatars.planningcenteronline.com/uploads/person/33204600-1515621874/avatar.4.png"
 },
@@ -197,13 +208,13 @@ const nominees = [
 },
 
 {
-  personID:33204627,
+  personID:AUD33204627,
   name:"Vinci Mathews",
   avatar:"https://avatars.planningcenteronline.com/uploads/person/33204627-1515621874/avatar.2.png"
 },
 
 {
-  personID:33204631,
+  personID:AUD33204631,
   name:"Bennish John",
   avatar:"https://avatars.planningcenteronline.com/uploads/person/33204631-1515621874/avatar.3.png"
 },
@@ -305,50 +316,180 @@ const nominees = [
 }
 
 ];
-
-let selectedPeople = [];
+const councilMembers =
+nominees.filter(
+x => !String(x.personID).startsWith("AUD")
+);
+ 
+const auditors =
+nominees.filter(
+x => String(x.personID).startsWith("AUD")
+);
+let selectedCouncil = [];
+let selectedAuditor = [];
 
 renderGallery();
 
-function renderGallery(){
-
- const gallery =
- document.getElementById("gallery");
-
- nominees.forEach(person => {
-
-   gallery.innerHTML += `
-
-   <div class="card">
-
-      <img
-       src="${person.avatar}"
-       alt="${person.name}">
-
-      <div class="name">
-
-        ${person.name}
-
-      </div>
-
-      <button
-       class="selectBtn"
-       id="btn-${person.personID}"
-       onclick="togglePerson(${person.personID})">
-
-       Select
-
-      </button>
-
-   </div>
-
-   `;
-
- });
-
+function renderGallery()
+{
+    renderCouncilMembers();
+    renderAuditors();
 }
 
-function togglePerson(personID){
+function renderCouncilMembers(){
+
+    const gallery =
+        document.getElementById(
+            "councilGallery"
+        );
+
+    councilMembers.forEach(person => {
+
+        gallery.innerHTML += `
+
+        <div class="card">
+
+            ${person.avatar}
+
+            <div class="name">
+                ${person.name}
+            </div>
+
+            <button
+                class="selectBtn"
+                id="council-${person.personID}"
+                onclick="toggleCouncil('${person.personID}')">
+
+                Select
+
+            </button>
+
+        </div>
+        `;
+    });
+}
+function renderAuditors(){
+
+    const gallery =
+        document.getElementById(
+            "auditorGallery"
+        );
+
+    auditors.forEach(person => {
+
+        gallery.innerHTML += `
+
+        <div class="card">
+
+            ${person.avatar}
+
+            <div class="name">
+                ${person.name}
+            </div>
+
+            <button
+                class="selectBtn"
+                id="auditor-${person.personID}"
+                onclick="toggleAuditor('${person.personID}')">
+
+                Select
+
+            </button>
+
+        </div>
+        `;
+    });
+}
+
+  function toggleCouncil(personID){
+
+    const button =
+        document.getElementById(
+            `council-${personID}`
+        );
+
+    const index =
+        selectedCouncil.indexOf(
+            personID
+        );
+
+    if(index > -1){
+
+        selectedCouncil.splice(
+            index,
+            1
+        );
+
+        button.textContent =
+            "Select";
+
+        button.classList.remove(
+            "selected"
+        );
+    }
+    else{
+
+        if(
+            selectedCouncil.length >= 5
+        ){
+
+            alert(
+                "You may select only 5 council members."
+            );
+
+            return;
+        }
+
+        selectedCouncil.push(
+            personID
+        );
+
+        button.textContent =
+            "Selected";
+
+        button.classList.add(
+            "selected"
+        );
+    }
+
+    updateCounter();
+}
+
+  function toggleAuditor(personID){
+
+    selectedAuditor = [personID];
+
+    auditors.forEach(a => {
+
+        const btn =
+            document.getElementById(
+                `auditor-${a.personID}`
+            );
+
+        btn.textContent =
+            "Select";
+
+        btn.classList.remove(
+            "selected"
+        );
+    });
+
+    const button =
+        document.getElementById(
+            `auditor-${personID}`
+        );
+
+    button.textContent =
+        "Selected";
+
+    button.classList.add(
+        "selected"
+    );
+
+    updateCounter();
+}
+  
+  function togglePerson(personID){
 
  const button =
  document.getElementById(
@@ -391,25 +532,45 @@ function togglePerson(personID){
 
 function updateCounter(){
 
- const count =
- selectedPeople.length;
+    document.getElementById(
+        "counter"
+    ).innerHTML =
 
- document.getElementById(
- "counter"
- ).textContent =
- `Selected: ${count} of 5`;
+    `Council: ${selectedCouncil.length}/5
+     | Auditor: ${selectedAuditor.length}/1`;
 
- document.getElementById(
- "submitBtn"
- ).style.display =
- count===5
- ? "block"
- : "none";
+    document.getElementById(
+        "submitBtn"
+    ).style.display =
 
+    selectedCouncil.length === 5 &&
+    selectedAuditor.length === 1
+
+    ? "block"
+    : "none";
 }
 
 async function submitVotes(){
+if(
+    selectedCouncil.length !== 5
+){
 
+    alert(
+        "Please select 5 council members."
+    );
+
+    return;
+}
+  if(
+    selectedAuditor.length !== 1
+){
+
+    alert(
+        "Please select 1 auditor."
+    );
+
+    return;
+}
  const votingCode =
  document.getElementById(
  'voteCode'
@@ -424,17 +585,23 @@ async function submitVotes(){
    return;
  }
 
- const votes =
- nominees
- .filter(n =>
-     selectedPeople.includes(
-     n.personID
-     )
- )
- .map(n => ({
-     personID:n.personID,
-     personName:n.name
- }));
+ const votes = nominees
+.filter(n =>
+
+    selectedCouncil.includes(
+        String(n.personID)
+    )
+
+    ||
+
+    selectedAuditor.includes(
+        String(n.personID)
+    )
+)
+.map(n => ({
+    personID:n.personID,
+    personName:n.name
+}));
 
  const payload = {
 
