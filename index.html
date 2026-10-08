@@ -522,40 +522,24 @@ function updateCounter(){
 }
 
 async function submitVotes(){
-  document.getElementById(
-    "loadingOverlay"
-).style.display =
-"block";
-const submitBtn =
-    document.getElementById(
-        "submitBtn"
-    );
 
-submitBtn.disabled = true;
-
-submitBtn.innerHTML =
-`
-<span class="spinner"></span>
-Submitting...
-`;
-    document.getElementById(
-        "submitBtn"
-    ).disabled = true;
+    const submitBtn =
+        document.getElementById(
+            "submitBtn"
+        );
 
     const votingCode =
         document.getElementById(
             "voteCode"
         ).value.trim();
 
+    // Validate first BEFORE showing spinner
+
     if(votingCode === ""){
 
         alert(
             "Please enter a voting code."
         );
-
-        document.getElementById(
-            "submitBtn"
-        ).disabled = false;
 
         return;
     }
@@ -566,10 +550,6 @@ Submitting...
             "Please select 5 council members."
         );
 
-        document.getElementById(
-            "submitBtn"
-        ).disabled = false;
-
         return;
     }
 
@@ -579,12 +559,22 @@ Submitting...
             "Please select 1 auditor."
         );
 
-        document.getElementById(
-            "submitBtn"
-        ).disabled = false;
-
         return;
     }
+
+    // Start loading only after validations pass
+
+    document.getElementById(
+        "loadingOverlay"
+    ).style.display = "block";
+
+    submitBtn.disabled = true;
+
+    submitBtn.innerHTML =
+    `
+    <span class="spinner"></span>
+    Recording your vote...
+    `;
 
     const votes = nominees
         .filter(n =>
@@ -649,16 +639,16 @@ Submitting...
             `;
         }
         else{
-        
+
             document.getElementById(
                 "loadingOverlay"
             ).style.display = "none";
-        
+
             submitBtn.disabled = false;
-        
+
             submitBtn.innerHTML =
                 "Submit Choices";
-        
+
             alert(
                 result.message ||
                 "The voting code is invalid or an unexpected error occurred."
@@ -668,20 +658,20 @@ Submitting...
     }
     catch(ex){
 
-    document.getElementById(
-        "loadingOverlay"
-    ).style.display = "none";
+        document.getElementById(
+            "loadingOverlay"
+        ).style.display = "none";
 
-    submitBtn.disabled = false;
+        submitBtn.disabled = false;
 
-    submitBtn.innerHTML =
-        "Submit Choices";
+        submitBtn.innerHTML =
+            "Submit Choices";
 
-    alert(
-        "Unable to submit vote."
-    );
+        alert(
+            "Unable to submit vote. Please try again."
+        );
 
-    console.error(ex);
+        console.error(ex);
     }
 }
 
