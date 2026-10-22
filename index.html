@@ -521,7 +521,7 @@ function updateCounter(){
     : "none";
 }
 
-function showMessage(message){
+function showMessage(title, message){
 
     document.body.insertAdjacentHTML(
         "beforeend",
@@ -562,7 +562,7 @@ function showMessage(message){
                     color:#6b5700;
                     margin-bottom:15px;
                 ">
-                    Vote Already Recorded
+                    ${title}
                 </div>
 
                 <div style="
@@ -587,7 +587,7 @@ function showMessage(message){
                         font-weight:600;
                         cursor:pointer;
                     ">
-                    Amen 🙏
+                    OK
                 </button>
 
             </div>
@@ -724,10 +724,26 @@ async function submitVotes(){
             submitBtn.innerHTML =
                 "Submit Choices";
 
-            showMessage(
-                result.message ||
-                "The voting code is invalid or an unexpected error occurred."
-            );
+if(
+    result.message &&
+    result.message.includes(
+        "already voted"
+    )
+){
+
+                showMessage(
+                    "Vote Already Recorded",
+                    result.message
+                );
+            }
+            else{
+            
+                showMessage(
+                    "Invalid Voting Code",
+                    result.message ||
+                    "The voting code entered is not valid. Please check the code and try again."
+                );
+            }
         }
 
     }
