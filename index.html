@@ -710,14 +710,15 @@ async function submitVotes(){
 
     // Validate first BEFORE showing spinner
 
-    if(votingCode === ""){
+if(votingCode === ""){
 
-        alert(
-            "Please enter a voting code."
-        );
+    showMessage(
+        "Voting Code Required",
+        "Please enter the code you received from the ushers before submitting your selections."
+    );
 
-        return;
-    }
+    return;
+}
 
     if(selectedCouncil.length !== 5){
 
