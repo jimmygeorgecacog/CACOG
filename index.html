@@ -423,13 +423,16 @@ const auditorNominees =
         name: person.name,
         avatar: person.avatar
     }));
-  
+
+const allNominees =
+[
+    ...councilNominees,
+    ...auditorNominees
+];
 const councilMembers = councilNominees;
 
 const auditors = auditorNominees;
 
-let selectedCouncil = [];
-let selectedAuditor = [];
 let selectedCouncil = [];
 let selectedAuditor = [];
 
@@ -749,11 +752,6 @@ if(votingCode === ""){
     Recording your vote...
     `;
 
-    const allNominees =
-[
-    ...councilNominees,
-    ...auditorNominees
-];
 
 const votes = allNominees
     .filter(n =>
