@@ -749,24 +749,30 @@ if(votingCode === ""){
     Recording your vote...
     `;
 
-    const votes = nominees
-        .filter(n =>
+    const allNominees =
+[
+    ...councilNominees,
+    ...auditorNominees
+];
 
-            selectedCouncil.includes(
-                String(n.personID)
-            )
+const votes = allNominees
+    .filter(n =>
 
-            ||
-
-            selectedAuditor.includes(
-                String(n.personID)
-            )
-
+        selectedCouncil.includes(
+            String(n.personID)
         )
-        .map(n => ({
-            personID:n.personID,
-            personName:n.name
-        }));
+
+        ||
+
+        selectedAuditor.includes(
+            String(n.personID)
+        )
+
+    )
+    .map(n => ({
+        personID:n.personID,
+        personName:n.name
+    }));
 
     const payload = {
 
