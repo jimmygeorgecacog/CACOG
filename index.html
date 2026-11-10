@@ -500,17 +500,74 @@ async function startElection(){
         return;
     }
 
-    votingCode = code;
+    try{
 
-    document.getElementById(
-        "welcomeScreen"
-    ).style.display = "none";
+        const response =
+            await fetch(
+                FLOW_URL,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        votingCode: code,
+                        votes: []
+                    })
+                }
+            );
 
-    document.getElementById(
-        "councilScreen"
-    ).style.display = "block";
+        const result =
+            await response.json();
 
-    renderCouncilMembers();
+        if(
+            result.message &&
+            result.message.toLowerCase().includes(
+                "already voted"
+            )
+        ){
+
+            showMessage(
+                "Vote Already Recorded",
+                result.message
+            );
+
+            return;
+        }
+
+        if(!result.success){
+
+            showMessage(
+                "Invalid Voting Code",
+                result.message ||
+                "The voting code entered is not valid."
+            );
+
+            return;
+        }
+
+        votingCode = code;
+
+        document.getElementById(
+            "welcomeScreen"
+        ).style.display = "none";
+
+        document.getElementById(
+            "councilScreen"
+        ).style.display = "block";
+
+        renderCouncilMembers();
+
+    }
+    catch(ex){
+
+        console.error(ex);
+
+        showMessage(
+            "Validation Error",
+            "Unable to validate the voting code."
+        );
+    }
 }
 
 function renderGallery()
