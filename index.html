@@ -525,24 +525,25 @@ function renderCouncilMembers(){
             "councilGallery"
         );
 
-gallery.innerHTML += `
+    gallery.innerHTML = "";
 
-document.getElementById(
-   "councilCounter"
-).innerHTML =
-   `Selected ${selectedCouncil.length} of 5`;
+    document.getElementById(
+        "councilCounter"
+    ).innerHTML =
+        `Selected ${selectedCouncil.length} of 5`;
 
-councilMembers.forEach(person => {
- 
-          <div class="card">
-          
-              <img
-                  src="${person.avatar}"
-                  alt="${person.name}">
-          
-              <div class="name">
-                  ${person.name}
-              </div>
+    councilMembers.forEach(person => {
+
+        gallery.innerHTML += `
+        <div class="card">
+
+            <img
+                src="${person.avatar}"
+                alt="${person.name}">
+
+            <div class="name">
+                ${person.name}
+            </div>
 
             <button
                 class="selectBtn"
