@@ -14,6 +14,24 @@
 }
 
 body{
+  #welcomeScreen{
+    min-height:90vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    max-width:600px;
+    margin:auto;
+}
+
+#councilScreen,
+#auditorScreen{
+    width:100%;
+}
+
+.submitBtn{
+    display:block;
+    margin:20px auto;
+}
   margin:0;
   padding:15px;
   background:#f2f2f2;
@@ -123,56 +141,83 @@ button{
 
 <body>
 
-<div class="header">
+<div id="welcomeScreen" class="header">
 
-<h1>CACOG Council Election</h1>
-<p>
-Please prayerfully select 5 council nominees and 1 auditor. Once submitted, your vote cannot be changed.
-</p>
+    <h1>CACOG Council Election</h1>
 
-<label for="voteCode">
-Voting Code 
-</label>
-<p> 
-<input
- id="voteCode"
- maxlength="20"
- placeholder="Enter voting code">
+    <p>
+        Please prayerfully select 5 council nominees and 1 auditor.
+    </p>
 
-<div
- id="counter"
- class="counter"
- aria-live="polite">
+    <p>
+        Input the code you received before you start the council election process.
+    </p>
 
-Council Members: 0/5 | Auditor: 0/1
+    <input
+        id="voteCode"
+        maxlength="8"
+        placeholder="ABCD5000"
+        style="text-transform:uppercase">
 
-</div>
+    <button
+        class="submitBtn"
+        style="display:block;margin-top:20px"
+        onclick="startElection()">
 
-<button
- id="submitBtn"
- class="submitBtn"
- onclick="submitVotes()">
+        Continue
 
-Submit Choices
-
-</button>
+    </button>
 
 </div>
 
-<h2>Council Members</h2>
+<div id="councilScreen" style="display:none">
 
-<div
- id="councilGallery"
- class="gallery">
+    <div class="header">
+
+        <h2>Please select 5 council nominees</h2>
+
+        <div id="councilCounter" class="counter">
+            Selected 0 of 5
+        </div>
+
+    </div>
+
+    <div id="councilGallery" class="gallery"></div>
+
+    <button
+        id="councilSubmitBtn"
+        class="submitBtn"
+        onclick="submitCouncilSelection()">
+
+        Continue To Auditor Selection
+
+    </button>
+
 </div>
 
-<hr style="margin:30px 0">
+<div id="auditorScreen" style="display:none">
 
-<h2>Auditor</h2>
+    <div class="header">
 
-<div
- id="auditorGallery"
- class="gallery">
+        <h2>Please select an auditor</h2>
+
+        <div id="auditorCounter" class="counter">
+            Selected 0 of 1
+        </div>
+
+    </div>
+
+    <div id="auditorGallery" class="gallery"></div>
+
+    <button
+        id="submitBtn"
+        class="submitBtn"
+        onclick="submitVotes()">
+
+        Submit Final Vote
+
+    </button>
+
 </div>
 
 <script>
@@ -435,8 +480,41 @@ const auditors = auditorNominees;
 
 let selectedCouncil = [];
 let selectedAuditor = [];
+let filteredAuditors = [];
+let votingCode = "";
 
-renderGallery();
+function startElection(){
+
+    const code =
+        document.getElementById(
+            "voteCode"
+        ).value.trim().toUpperCase();
+
+    const pattern =
+        /^[A-Z]{4}[5-9][0-9]{3}$/;
+
+    if(!pattern.test(code)){
+
+        showMessage(
+            "Invalid Voting Code",
+            "Please enter your 8 character voting code."
+        );
+
+        return;
+    }
+
+    votingCode = code;
+
+    document.getElementById(
+        "welcomeScreen"
+    ).style.display = "none";
+
+    document.getElementById(
+        "councilScreen"
+    ).style.display = "block";
+
+    renderCouncilMembers();
+}
 
 function renderGallery()
 {
@@ -455,6 +533,11 @@ function renderCouncilMembers(){
 
         gallery.innerHTML += `
 
+document.getElementById(
+   "councilCounter"
+).innerHTML =
+   `Selected ${selectedCouncil.length} of 5`;
+   
           <div class="card">
           
               <img
@@ -564,14 +647,81 @@ function renderAuditors(){
         );
     }
 
-    updateCounter();
+   updateCouncilCounter();
 }
+function submitCouncilSelection(){
 
+    if(selectedCouncil.length !== 5){
+
+        alert(
+            "Please select 5 council members."
+        );
+
+        return;
+    }
+
+  function renderFilteredAuditors(){
+
+    const gallery =
+        document.getElementById(
+            "auditorGallery"
+        );
+
+    gallery.innerHTML = "";
+
+    filteredAuditors.forEach(person => {
+
+        gallery.innerHTML += `
+        <div class="card">
+
+            <img
+               src="${person.avatar}"
+               alt="${person.name}">
+
+            <div class="name">
+                ${person.name}
+            </div>
+
+            <button
+                class="selectBtn"
+                id="auditor-${person.personID}"
+                onclick="toggleAuditor('${person.personID}')">
+
+                Select
+
+            </button>
+
+        </div>
+        `;
+    });
+}
+    filteredAuditors =
+        auditorNominees.filter(a =>
+
+           !selectedCouncil.includes(
+               String(a.personID)
+                    .replace(
+                        "AUD",
+                        ""
+                    )
+            )
+        );
+
+    document.getElementById(
+       "councilScreen"
+    ).style.display = "none";
+
+    document.getElementById(
+       "auditorScreen"
+    ).style.display = "block";
+
+    renderFilteredAuditors();
+}
   function toggleAuditor(personID){
 
     selectedAuditor = [personID];
 
-    auditors.forEach(a => {
+  filteredAuditors.forEach(a => {
 
         const btn =
             document.getElementById(
@@ -598,25 +748,35 @@ function renderAuditors(){
         "selected"
     );
 
-    updateCounter();
+    updateAuditorCounter();
 }
   
-function updateCounter(){
+function updateCouncilCounter(){
 
     document.getElementById(
-        "counter"
+        "councilCounter"
     ).innerHTML =
+    `Selected ${selectedCouncil.length} of 5`;
 
-    `Council: ${selectedCouncil.length}/5
-     | Auditor: ${selectedAuditor.length}/1`;
+    document.getElementById(
+        "councilSubmitBtn"
+    ).style.display =
+    selectedCouncil.length === 5
+    ? "block"
+    : "none";
+}
+
+function updateAuditorCounter(){
+
+    document.getElementById(
+        "auditorCounter"
+    ).innerHTML =
+    `Selected ${selectedAuditor.length} of 1`;
 
     document.getElementById(
         "submitBtn"
     ).style.display =
-
-    selectedCouncil.length === 5 &&
     selectedAuditor.length === 1
-
     ? "block"
     : "none";
 }
@@ -703,10 +863,8 @@ async function submitVotes(){
             "submitBtn"
         );
 
-    const votingCode =
-        document.getElementById(
-            "voteCode"
-        ).value.trim();
+const voteCode = votingCode;
+votingCode: voteCode
 
     // Validate first BEFORE showing spinner
 
