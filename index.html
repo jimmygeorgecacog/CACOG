@@ -925,10 +925,15 @@ const votes = allNominees
         personName:n.name
     }));
 
+alert("Voting code being submitted = " + votingCode);
+console.log("Voting code =", votingCode);
+  
 const payload = {
     votingCode: voteCode,
     votes: votes
 };
+
+console.log(payload);
 
     try{
 
