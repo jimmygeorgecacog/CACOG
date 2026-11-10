@@ -646,23 +646,12 @@ function renderAuditors(){
 
    updateCouncilCounter();
 }
-  function renderFilteredAuditors(){
+function renderFilteredAuditors(){
 
     const gallery =
         document.getElementById(
             "auditorGallery"
         );
-    
-function submitCouncilSelection(){
-
-    if(selectedCouncil.length !== 5){
-
-        alert(
-            "Please select 5 council members."
-        );
-
-        return;
-    }
 
     gallery.innerHTML = "";
 
@@ -692,28 +681,38 @@ function submitCouncilSelection(){
         `;
     });
 }
+    
+function submitCouncilSelection(){
+
+    if(selectedCouncil.length !== 5){
+
+        alert(
+            "Please select 5 council members."
+        );
+
+        return;
+    }
+
     filteredAuditors =
         auditorNominees.filter(a =>
 
-           !selectedCouncil.includes(
-               String(a.personID)
-                    .replace(
-                        "AUD",
-                        ""
-                    )
+            !selectedCouncil.includes(
+                String(a.personID)
+                    .replace("AUD","")
             )
         );
 
     document.getElementById(
-       "councilScreen"
+        "councilScreen"
     ).style.display = "none";
 
     document.getElementById(
-       "auditorScreen"
+        "auditorScreen"
     ).style.display = "block";
 
     renderFilteredAuditors();
 }
+  
   function toggleAuditor(personID){
 
     selectedAuditor = [personID];
@@ -926,13 +925,10 @@ const votes = allNominees
         personName:n.name
     }));
 
-    const payload = {
-
-        votingCode:votingCode,
-
-        votes:votes
-
-    };
+const payload = {
+    votingCode: voteCode,
+    votes: votes
+};
 
     try{
 
