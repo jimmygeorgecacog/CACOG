@@ -480,20 +480,21 @@ let selectedAuditor = [];
 let filteredAuditors = [];
 let votingCode = "";
 
-function startElection(){
+async function startElection(){
 
     const code =
         document.getElementById(
             "voteCode"
         ).value.trim().toUpperCase();
 
-const pattern = /^[A-Z]{4}[5-9][0-9]{3}$/;
+    const pattern =
+        /^[A-Z]{4}[5-9][0-9]{3}$/;
 
     if(!pattern.test(code)){
 
         showMessage(
             "Invalid Voting Code",
-            "Please enter your 8 character voting code."
+            "Please enter a valid voting code."
         );
 
         return;
