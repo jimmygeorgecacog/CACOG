@@ -226,6 +226,9 @@ button{
 const FLOW_URL =
 "https://default8d402e1fa53e4ad58af5bdaf6394ab.30.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/06/workflows/5bedc479f9a440c9a258a74bb994ec13/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Qy6eaCzcp2l01lJj7Mb5PsWkA4kguaPQS7jOhC0zZ8w";
 
+const VALIDATE_FLOW_URL =
+"https://default8d402e1fa53e4ad58af5bdaf6394ab.30.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/27/workflows/43a33987a63b4d3a8ef270cb9e8efe4c/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=0LJ5xiMp9l4YgvG--pc4Df7jaVtSF4eRohMsRoQTRkU";
+
 /**********************************************
  SAMPLE DATA
  REPLACE WITH YOUR POWER BI EXPORT
@@ -504,15 +507,14 @@ async function startElection(){
 
         const response =
             await fetch(
-                FLOW_URL,
+                VALIDATE_FLOW_URL,
                 {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
+                    method:'POST',
+                    headers:{
+                        'Content-Type':'application/json'
                     },
-                    body: JSON.stringify({
-                        votingCode: code,
-                        votes: []
+                    body:JSON.stringify({
+                        votingCode: code
                     })
                 }
             );
@@ -520,28 +522,27 @@ async function startElection(){
         const result =
             await response.json();
 
-        if(
-            result.message &&
-            result.message.toLowerCase().includes(
-                "already voted"
-            )
-        ){
-
-            showMessage(
-                "Vote Already Recorded",
-                result.message
-            );
-
-            return;
-        }
-
         if(!result.success){
 
-            showMessage(
-                "Invalid Voting Code",
-                result.message ||
-                "The voting code entered is not valid."
-            );
+            if(
+                result.message &&
+                result.message.toLowerCase().includes(
+                    "already voted"
+                )
+            ){
+
+                showMessage(
+                    "Vote Already Recorded",
+                    result.message
+                );
+            }
+            else{
+
+                showMessage(
+                    "Invalid Voting Code",
+                    result.message
+                );
+            }
 
             return;
         }
@@ -569,7 +570,6 @@ async function startElection(){
         );
     }
 }
-
 function renderGallery()
 {
     renderCouncilMembers();
@@ -983,15 +983,11 @@ const votes = allNominees
         personName:n.name
     }));
 
-alert("Voting code being submitted = " + votingCode);
-console.log("Voting code =", votingCode);
-  
+
 const payload = {
     votingCode: voteCode,
     votes: votes
 };
-
-console.log(payload);
 
     try{
 
