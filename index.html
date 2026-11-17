@@ -859,12 +859,14 @@ function updateAuditorCounter(){
     ).innerHTML =
     `Selected ${selectedAuditor.length} of 1`;
 
-    document.getElementById(
-        "submitBtn"
-    ).style.display =
-    selectedAuditor.length === 1
-    ? "block"
-    : "none";
+    if(selectedAuditor.length === 1){
+
+        document.getElementById(
+            "submitBtn"
+        ).style.display = "none";
+
+        showFinalReviewModal();
+    }
 }
 
 function showMessage(title, message){
@@ -941,6 +943,67 @@ function showMessage(title, message){
         </div>
         `
     );
+}
+
+function showFinalReviewModal(){
+
+    const councilContainer =
+        document.getElementById(
+            "finalCouncilList"
+        );
+
+    const auditorContainer =
+        document.getElementById(
+            "finalAuditorList"
+        );
+
+    councilContainer.innerHTML = "";
+    auditorContainer.innerHTML = "";
+
+    selectedCouncil.forEach(id => {
+
+        const nominee =
+            councilMembers.find(
+                p =>
+                String(p.personID) ===
+                String(id)
+            );
+
+        councilContainer.innerHTML += `
+            <div class="selectedReview">
+                <img src="${nominee.avatar}">
+                <div>${nominee.name}</div>
+            </div>
+        `;
+    });
+
+    const auditorId =
+        selectedAuditor[0];
+
+    const auditor =
+        auditorNominees.find(
+            a =>
+            String(a.personID) ===
+            String(auditorId)
+        );
+
+    auditorContainer.innerHTML = `
+        <div class="selectedReview">
+            <img src="${auditor.avatar}">
+            <div>${auditor.name}</div>
+        </div>
+    `;
+
+    document.getElementById(
+        "finalReviewModal"
+    ).style.display = "flex";
+}
+
+function closeFinalReviewModal(){
+
+    document.getElementById(
+        "finalReviewModal"
+    ).style.display = "none";
 }
 async function submitVotes(){
 
@@ -1134,5 +1197,46 @@ if(
     Submitting your vote...
 
 </div>
+<div id="finalReviewModal" class="modalOverlay">
+    <div class="modalBox">
+
+        <h2>Review Your Ballot</h2>
+
+        <p>Please review your selections before submitting.</p>
+
+        <h3>Council Nominees</h3>
+
+        <div id="finalCouncilList"></div>
+
+        <h3 style="margin-top:20px">
+            Auditor
+        </h3>
+
+        <div id="finalAuditorList"></div>
+
+        <div class="modalButtons">
+
+            <button
+                class="reviewBtn"
+                onclick="closeFinalReviewModal()">
+
+                Modify Selection
+
+            </button>
+
+            <button
+                class="continueBtn"
+                onclick="submitVotes()">
+
+                Submit Final Vote
+
+            </button>
+
+        </div>
+
+    </div>
+</div>
+
+  
 </body>
 </html>
