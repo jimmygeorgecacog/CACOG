@@ -132,6 +132,69 @@ button{
 @keyframes spin {
     to { transform: rotate(360deg); }
 }
+.modalOverlay{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.65);
+    z-index:10000;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+}
+
+.modalBox{
+    background:white;
+    width:100%;
+    max-width:500px;
+    border-radius:15px;
+    padding:25px;
+    box-shadow:0 12px 30px rgba(0,0,0,.3);
+}
+
+.modalBox h2{
+    margin-top:0;
+    text-align:center;
+}
+
+.selectedReview{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin:10px 0;
+}
+
+.selectedReview img{
+    width:50px;
+    height:50px;
+    border-radius:50%;
+    object-fit:cover;
+}
+
+.modalButtons{
+    display:flex;
+    gap:10px;
+    margin-top:20px;
+}
+
+.modalButtons button{
+    flex:1;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:600;
+}
+
+.reviewBtn{
+    background:#e9ecef;
+}
+
+.continueBtn{
+    background:#28a745;
+    color:white;
+}
+  
 </style>
 
 </head>
@@ -184,6 +247,7 @@ button{
     <button
         id="councilSubmitBtn"
         class="submitBtn"
+        style="display:none"
         onclick="submitCouncilSelection()">
 
         Continue To Auditor Selection
@@ -216,7 +280,33 @@ button{
     </button>
 
 </div>
+<div id="reviewModal" class="modalOverlay">
+    <div class="modalBox">
 
+        <h2>Review Council Selections</h2>
+
+        <p>
+            You have selected the following 5 nominees:
+        </p>
+
+        <div id="selectedCouncilList"></div>
+
+        <div class="modalButtons">
+            <button
+                class="reviewBtn"
+                onclick="closeReviewModal()">
+                Modify Selection
+            </button>
+
+            <button
+                class="continueBtn"
+                onclick="continueToAuditor()">
+                Continue To Auditor Selection
+            </button>
+        </div>
+
+    </div>
+</div>
 <script>
 
 /**********************************************
@@ -620,7 +710,66 @@ function renderFilteredAuditors(){
         `;
     });
 }
-    
+
+function showReviewModal(){
+
+    const container =
+        document.getElementById(
+            "selectedCouncilList"
+        );
+
+    container.innerHTML = "";
+
+    selectedCouncil.forEach(id => {
+
+        const nominee =
+            councilMembers.find(
+                p => String(p.personID) === String(id)
+            );
+
+        container.innerHTML += `
+            <div class="selectedReview">
+                <img src="${nominee.avatar}">
+                <div>${nominee.name}</div>
+            </div>
+        `;
+    });
+
+    document.getElementById(
+        "reviewModal"
+    ).style.display = "flex";
+}
+
+function closeReviewModal(){
+
+    document.getElementById(
+        "reviewModal"
+    ).style.display = "none";
+}
+
+function continueToAuditor(){
+
+    closeReviewModal();
+
+    filteredAuditors =
+        auditorNominees.filter(a =>
+            !selectedCouncil.includes(
+                String(a.personID)
+                    .replace("AUD","")
+            )
+        );
+
+    document.getElementById(
+        "councilScreen"
+    ).style.display = "none";
+
+    document.getElementById(
+        "auditorScreen"
+    ).style.display = "block";
+
+    renderFilteredAuditors();
+}
+  
 function submitCouncilSelection(){
 
     if(selectedCouncil.length !== 5){
@@ -693,12 +842,14 @@ function updateCouncilCounter(){
     ).innerHTML =
     `Selected ${selectedCouncil.length} of 5`;
 
-    document.getElementById(
-        "councilSubmitBtn"
-    ).style.display =
-    selectedCouncil.length === 5
-    ? "block"
-    : "none";
+    if(selectedCouncil.length === 5){
+
+        document.getElementById(
+            "councilSubmitBtn"
+        ).style.display = "none";
+
+        showReviewModal();
+    }
 }
 
 function updateAuditorCounter(){
